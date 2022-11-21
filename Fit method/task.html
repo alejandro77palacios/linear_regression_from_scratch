@@ -1,0 +1,129 @@
+<h5 id="description">Description</h5>
+<p>Linear regressions are in charge of modeling the relationships between variables by fitting a straight line. If you have two variables, which are <strong>a dependant </strong>variable and <strong>an independent </strong>(explanatory) variable, the relationship between them is called <strong>simple linear regression</strong>. The first step to understanding the relationship between two variables <span class="math-tex">\(\vec{x}\)</span> and <span class="math-tex">\(\vec{y}\)</span>  is to write a simple linear model: <span class="math-tex">\(\vec{y} = \beta_0 + \beta_1\vec{x}\)</span>.</p>
+<p>Note that <span class="math-tex">\(\vec{x}\)</span> and <span class="math-tex">\(\vec{y}\)</span> are vectors consisting of a certain number of components, <span class="math-tex">\(\vec{x} = (x_1, x_2, x_3, ...)\)</span>. Each component is one observation. For instance, if <span class="math-tex">\(\vec{x}\)</span> is the temperature of patients in the hospital, each component is a temperature of a person and the number of components equals the number of patients in the hospital.</p>
+<p>To find <span class="math-tex">\(\beta_0\)</span> and <span class="math-tex">\(\beta_1\)</span>, you need to compose other simple linear models. How many of them depends purely on how many components <span class="math-tex">\(\vec{x}\)</span> and <span class="math-tex">\(\vec{y}\)</span> have. The number of components in <span class="math-tex">\(\vec{x}\)</span> always equals the number of components in <span class="math-tex">\(\vec{y}\)</span>. For example, you have the following mathematical representation: <span class="math-tex">\(y_i = \beta_0 + \beta_1x_i\)</span>,  where <span class="math-tex">\(x_i\)</span>, <span class="math-tex">\(y_i\)</span> are components of <span class="math-tex">\(\vec{x}\)</span>, <span class="math-tex">\(\vec{y}\)</span> respectively and <span class="math-tex">\(\ i\ = 1..n\)</span>. In this case, you need to write <span class="math-tex">\(n\)</span> equations:</p>
+<p><span class="math-tex">\[y_1 = \beta_0 + \beta_1x_1\\ y_2 = \beta_0 + \beta_1x_2\\ y_3 = \beta_0 + \beta_1x_3\\ \vdots\\ y_n = \beta_0 + \beta_1x_n\\\]</span>How can we find <span class="math-tex">\(\beta_0\)</span> and <span class="math-tex">\(\beta_1\)</span>? This is where linear algebra comes in. The equation system above can be represented as the following matrix:</p>
+<p><span class="math-tex">\[\begin{bmatrix} y_1 \\ y_2 \\ \vdots\\ y_n\\ \end{bmatrix} = \begin{bmatrix} 1 &amp; x_1 \\ 1 &amp; x_2 \\ \vdots &amp;\vdots\\ 1 &amp; x_n\\ \end{bmatrix}\begin{bmatrix} \beta_0 \\ \beta_1 \\ \end{bmatrix}\]</span></p>
+<p>The matrix equation above can be represented as:</p>
+<p><span class="math-tex">\[\vec{y} = X\vec{\beta}\]</span><span class="math-tex">\(\vec{\beta}\)</span> is a vector of the model's coefficients that contains every <span class="math-tex">\(\beta_j\)</span> (in our case <span class="math-tex">\(j=0;1\)</span>). Finding the values of <span class="math-tex">\(\vec{\beta}\)</span> from the equations above is known as <strong>model fitting</strong>. To find <span class="math-tex">\(\vec{\beta}\)</span> we need a pinch of linear algebra:</p>
+<p><span class="math-tex">\[X^t\vec{y} = X^tX\vec{\beta}\\ \vec{\beta} = ( X^tX)^{-1}X^t\vec{y}\]</span></p>
+<p>In the first line of the equation above, we multiplied the right-hand side and the left-hand side of the previous equation by <span class="math-tex">\(X^t\)</span>, the transpose of <span class="math-tex">\(X\)</span>. In the second line, <span class="math-tex">\(\vec{\beta}\)</span> is expressed from the equation by multiplying <span class="math-tex">\(X^t\vec{y}\)</span> by the inverse of <span class="math-tex">\(X^tX\)</span>.</p>
+<p>Let’s come back to our system of equations. <span class="math-tex">\(\beta_0\)</span> , which is the first component of the <span class="math-tex">\(\vec{\beta}\)</span>, is the intercept coefficient. At this stage, we are assuming our model always has an intercept. This assumption is not always true, we will see further how to set up systems of equations without an intercept. Other components of <span class="math-tex">\(\vec{\beta}\)</span> are the model's coefficients, which at this stage is only <span class="math-tex">\(\beta_1\)</span>.</p>
+<p>The custom linear regression class can take the following form:</p>
+<pre><code class="language-python">class CustomLinearRegression:
+
+    def __init__(self, *, fit_intercept=True):
+
+        self.fit_intercept = ...
+        self.coefficient = ...
+        self.intercept = ...
+
+    def fit(self, X, y):
+        pass
+</code></pre>
+<p>When the <code class="language-python">fit_intercept</code> parameter is passed as <code class="language-python">True</code> to the <code class="language-python">CustomLinearRegression</code> class, the method solves the system of equations as shown above. If <code class="language-python">fit_intercept=False</code>, it solves it without an intercept.  The <code class="language-python">coefficient</code> and <code class="language-python">intercept</code> attributes datatypes are <strong>float</strong> and <code class="language-python">numpy</code> <strong>array</strong> respectively. The <code class="language-python">*</code> argument in the <code class="language-python">__init__</code> method signifies that CustomLinearRegression class can take more arguments than we would be using for this project.</p>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, your program should:</p>
+<ol>
+<li>Load a <code class="language-python">pandas</code> Dataframe containing <code class="language-python">x</code> and <code class="language-python">y</code>;</li>
+<li>Initialize <code class="language-python">CustomLinearRegression</code> class;</li>
+<li>Implement the <code class="language-python">fit()</code> method;</li>
+<li>Initialize your linear regression class with <code class="language-python">fit_intercept=True</code>;</li>
+<li>Fit the provided data;</li>
+<li>Print a dictionary containing the intercept and coefficient values.</li>
+</ol>
+<p>You are investigating the relationship between <code class="language-python">x</code> and <code class="language-python">y</code>. The data is provided in the table below:</p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>4.0</td>
+<td>4.5</td>
+<td>5</td>
+<td>5.5</td>
+<td>6.0</td>
+<td>6.5</td>
+<td>7.0</td>
+</tr>
+<tr>
+<td>y</td>
+<td>33</td>
+<td>42</td>
+<td>45</td>
+<td>51</td>
+<td>53</td>
+<td>61</td>
+<td>62</td>
+</tr>
+</tbody>
+</table>
+<h5 id="example">Example</h5>
+<p><strong>Example 1:</strong><br/>
+<em>an example of the input</em></p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>4.0</td>
+<td>7.0</td>
+</tr>
+<tr>
+<td>y</td>
+<td>10.0</td>
+<td>16.0</td>
+</tr>
+</tbody>
+</table>
+<p><em>an example of your output</em></p>
+<pre><code class="language-no-highlight">{'Intercept': 2.0, 'Coefficient': array([2.])}</code></pre>
+<p><strong>Example 2:</strong><br/>
+<em>an example of the input</em></p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>3.0</td>
+<td>4.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>y</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+</tbody>
+</table>
+<p><em>an example of your output</em></p>
+<pre><code class="language-no-highlight">{'Intercept': 0.0, 'Coefficient': array([0.])}</code></pre>
+<p> <strong>Example 3:</strong><br/>
+<em>an example of the input</em></p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>1.0</td>
+<td>4.5</td>
+<td>14.0</td>
+<td>3.8</td>
+<td>7.0</td>
+<td>19.4</td>
+</tr>
+<tr>
+<td>y</td>
+<td>106.0</td>
+<td>150.7</td>
+<td>200.9</td>
+<td>115.8</td>
+<td>177</td>
+<td>156</td>
+</tr>
+</tbody>
+</table>
+<p><em>an example of your output</em></p>
+<pre><code class="language-no-highlight">{'Intercept': 124.2562385800939, 'Coefficient': array([3.2366714])}</code></pre>
+<p> </p>

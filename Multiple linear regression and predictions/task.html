@@ -1,0 +1,211 @@
+<h5 id="description">Description</h5>
+<p>In the previous stage, we assumed that our system of equations has an intercept. In this stage, we need to modify our fit method to account for <strong>no intercept</strong>.</p>
+<p>The system of equations becomes:</p>
+<p><span class="math-tex">\[y_1 = \beta_1x_1\\ y_2 = \ \beta_1x_2\\ y_3 = \beta_1x_3\\ \vdots\\ y_n = \beta_1x_n\\\]</span>The matrix representation has changed:</p>
+<p><span class="math-tex">\[\begin{bmatrix} y_1 \\ y_2 \\ \vdots\\ y_n\\ \end{bmatrix} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots\\ x_n\\ \end{bmatrix}\begin{bmatrix}\beta_1 \\ \end{bmatrix}\]</span></p>
+<p>And the matrix equation above can be represented as:</p>
+<p><span class="math-tex">\[\vec{y} = X\vec{\beta}\]</span>Recall how we calculate <span class="math-tex">\(\vec{\beta}\)</span> as shown in the previous stage:</p>
+<p><span class="math-tex">\[X^t\vec{y}= X^tX\vec{\beta}\\ \vec{\beta} = ( X^tX)^{-1}X^t\vec{y}\]</span></p>
+<p>We have solved a simple linear regression problem at the previous stage. Meaning that <span class="math-tex">\(\vec{x}\)</span> was a vector representing a single feature. <span class="math-tex">\(X\)</span> was a matrix with column of 1 and column <span class="math-tex">\(\vec{x}\)</span>. At this stage, we are going to solve <strong>a multiple linear regression problem</strong>, so <span class="math-tex">\(X\)</span> is a <span class="math-tex">\(m \times n\)</span> matrix. <span class="math-tex">\(m\)</span> is the number of rows (= number of observations, e.g., the number of patients in the hospital) and <span class="math-tex">\(n\)</span>is the number of columns (= number of features, e.g., in the hospital dataset the number of indicators, which is temperature, blood pressure etc.) The advantage of matrix algebra in linear regression is that it makes no difference whether it is a simple or multiple linear regression problem. Matrix algebra can solve both.</p>
+<p>Note that number of components in the vector of coefficients, <span class="math-tex">\(\vec{\beta}\)</span>, equals the number of features, <span class="math-tex">\(n\)</span>, if <code class="language-python">fit_intercept=False</code>. In case <code class="language-python">fit_intercept=True</code>, the number of components equals <span class="math-tex">\(n+1\)</span>.</p>
+<p>To fit a model without an intercept initialize the regression class as shown below:</p>
+<pre><code class="language-python">reg = CustomLinearRegression(fit_intercept=False)</code></pre>
+<p>Let's focus on prediction. A fitted simple linear regression model means that we have an equation like <span class="math-tex">\(\vec{y} = -0.07 + 3.2\vec{x}\)</span> if there is an intercept. Or, <span class="math-tex">\(\vec{y} = 3.2\vec{x}\)</span> for a simple linear regression if there is no intercept. For new single observation <span class="math-tex">\(x'\)</span>, you make a prediction by feeding <span class="math-tex">\(x'\)</span> to the model, which calculates corresponding <span class="math-tex">\(y'\)</span>. Then, if you want to make several predictions at once, you feed <span class="math-tex">\(\vec{x'}\)</span> to the model and it returns <span class="math-tex">\(\vec{y'}\)</span>. The method, which takes <span class="math-tex">\(x'\)</span> or <span class="math-tex">\(\vec{x'}\)</span> and returns <span class="math-tex">\(y'\)</span> or <span class="math-tex">\(\vec{y'}\)</span> respectively, is called <code class="language-python">predict()</code>.</p>
+<p>So, prediction means solving the following equation for <span class="math-tex">\(\vec{y}\)</span>:</p>
+<p><span class="math-tex">\[\vec{y} = X\vec{\beta}\]</span></p>
+<p>The matrix representation for multiple linear regression with three explanatory variables, fitted with an intercept:</p>
+<p><span class="math-tex">\[\begin{bmatrix} y_1 \\ y_2 \\ \vdots\\ y_n\\ \end{bmatrix} = \begin{bmatrix} 1 &amp; x_1 &amp; w_1 &amp; z_1 \\ 1 &amp; x_2 &amp; w_2 &amp; z_2\\ \vdots &amp; \vdots &amp; \vdots &amp; \vdots\\ 1 &amp; x_n &amp; w_n &amp; z_n\\ \end{bmatrix}\begin{bmatrix}\beta_0\\\beta_1 \\\beta_2\\\beta_3 \end{bmatrix}\]</span>Without an intercept:</p>
+<p><span class="math-tex">\[\begin{bmatrix} y_1 \\ y_2 \\ \vdots\\ y_n\\ \end{bmatrix} = \begin{bmatrix} x_1 &amp; w_1 &amp; z_1 \\ x_2 &amp; w_2 &amp; z_2\\ \vdots &amp; \vdots &amp; \vdots\\ x_n &amp; w_n &amp; z_n\\ \end{bmatrix}\begin{bmatrix}\beta_1 \\\beta_2\\\beta_3 \end{bmatrix}\]</span></p>
+<p>The goal of this stage is to implement <code class="language-python">predict()</code> method, so your <code class="language-python">CustomLinearRegression</code> looks as follows:</p>
+<pre><code class="language-python"> class CustomLinearRegression:
+
+    def __init__(self, *, fit_intercept=True):
+
+        self.fit_intercept = ...
+        self.coefficient = ...
+        self.intercept = ...
+
+    def fit(self, X, y):
+        pass
+
+    def predict(self, X):
+        pass
+</code></pre>
+<p><code class="language-python">predict()</code> method takes a <code class="language-python">pandas</code> DataFrame <span class="math-tex">\(X\)</span> and returns a <code class="language-python">numpy</code> array of predictions.</p>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, your program should:</p>
+<ol>
+<li>Load a <code class="language-python">pandas</code> Dataframe;</li>
+<li>Initialize <code class="language-python">CustomLinearRegression</code> class with <code class="language-python">fit_intercept=False</code>;</li>
+<li>Fit the data by passing the <span class="math-tex">\(X\)</span> DataFrame and <span class="math-tex">\(\vec{y}\)</span> Series;</li>
+<li>Predict <span class="math-tex">\(\vec{y}\)</span>, which is a <code class="language-python">numpy</code> array;</li>
+<li>Print <span class="math-tex">\(\vec{y}\)</span></li>
+</ol>
+<p>You are investigating the relationship between explanatory variables <span class="math-tex">\(\vec{x}, \vec{w}, \vec{z}\)</span>, and a dependant variable <span class="math-tex">\(\vec{y}\)</span>. Take the following data for your calculations:</p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>4</td>
+<td>4.5</td>
+<td>5</td>
+<td>5.5</td>
+<td>6</td>
+<td>6.5</td>
+<td>7</td>
+</tr>
+<tr>
+<td>w</td>
+<td>1</td>
+<td>-3</td>
+<td>2</td>
+<td>5</td>
+<td>0</td>
+<td>3</td>
+<td>6</td>
+</tr>
+<tr>
+<td>z</td>
+<td>11</td>
+<td>15</td>
+<td>12</td>
+<td>9</td>
+<td>18</td>
+<td>13</td>
+<td>16</td>
+</tr>
+<tr>
+<td>y</td>
+<td>33</td>
+<td>42</td>
+<td>45</td>
+<td>51</td>
+<td>53</td>
+<td>61</td>
+<td>62</td>
+</tr>
+</tbody>
+</table>
+<p>The following block of code shows how to initialize, fit, and predict with the linear regression class:</p>
+<pre><code class="language-python">regCustom = CustomLinearRegression(fit_intercept=False)
+regCustom.fit(df[['x', 'w', 'z']], df['y'])
+y_pred = regCustom.predict(df[['x', 'w', 'z']])
+</code></pre>
+<h5 id="example">Example</h5>
+<p><strong>Example 1:</strong><br/>
+<em>an example of the input</em></p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>7</td>
+</tr>
+<tr>
+<td>w</td>
+<td>27</td>
+<td>2</td>
+<td>2</td>
+<td>7</td>
+</tr>
+<tr>
+<td>z</td>
+<td>3</td>
+<td>6</td>
+<td>3</td>
+<td>7</td>
+</tr>
+<tr>
+<td>y</td>
+<td>8</td>
+<td>6</td>
+<td>6</td>
+<td>21</td>
+</tr>
+</tbody>
+</table>
+<p><em>an example of your output</em></p>
+<pre><code class="language-no-highlight">[ 8.03456477  6.57607942  4.52523669 21.12344559]</code></pre>
+<p><strong>Example 2:</strong><br/>
+<em>an example of the input</em></p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>11</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+</tr>
+<tr>
+<td>w</td>
+<td>6</td>
+<td>90</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+</tr>
+<tr>
+<td>z</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+</tr>
+<tr>
+<td>y</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><em>an example of your output</em></p>
+<pre><code class="language-no-highlight">[0. 0. 0. 0. 0.]</code></pre>
+<p><strong style="font-size: inherit;">Example 3:</strong></p>
+<p><em>an example of the input</em></p>
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px;">
+<tbody>
+<tr>
+<td>x</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>10.5</td>
+</tr>
+<tr>
+<td>w</td>
+<td>7.5</td>
+<td>10</td>
+<td>11.6</td>
+<td>7.8</td>
+<td>13</td>
+</tr>
+<tr>
+<td>z</td>
+<td>26.7</td>
+<td>6.6</td>
+<td>11.9</td>
+<td>72.5</td>
+<td>2.1</td>
+</tr>
+<tr>
+<td>y</td>
+<td>105.6</td>
+<td>210.5</td>
+<td>177.9</td>
+<td>154.7</td>
+<td>160</td>
+</tr>
+</tbody>
+</table>
+<p><em>an example of your output</em></p>
+<pre><code class="language-no-highlight">[139.53608227 169.74836715 194.00679381 143.14277787 164.33101814]</code></pre>
+<p><em> </em></p>
